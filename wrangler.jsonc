@@ -1,0 +1,16 @@
+// Cloudflare Workers static assets: serves the web app's build, web/dist, with no Worker script.
+// GitHub Actions builds the WebAssembly module and the app, then deploys from web/ with
+// `npm run deploy`, which passes this file. web/public/_headers sets the response headers.
+// Docs: https://developers.cloudflare.com/workers/static-assets/
+{
+  "$schema": "./web/node_modules/wrangler/config-schema.json",
+  "name": "pathfinding-playground",
+  "compatibility_date": "2026-11-01",
+  // one page, so any other path is a 404.
+  "assets": { "directory": "./web/dist" },
+  // attaches the subdomain to this Worker and creates its DNS record on deploy.
+  "routes": [{ "pattern": "paths.eigenomar.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
+  "send_metrics": false
+}

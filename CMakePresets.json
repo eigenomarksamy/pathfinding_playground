@@ -1,0 +1,114 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": { "CMAKE_EXPORT_COMPILE_COMMANDS": "ON" }
+    },
+    {
+      "name": "windows-msvc",
+      "displayName": "Windows, MSVC",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "linux",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Ninja",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+    },
+    {
+      "name": "linux-gcc",
+      "displayName": "Linux, GCC",
+      "inherits": "linux",
+      "cacheVariables": { "CMAKE_CXX_COMPILER": "g++" }
+    },
+    {
+      "name": "linux-clang",
+      "displayName": "Linux, Clang",
+      "inherits": "linux",
+      "cacheVariables": { "CMAKE_CXX_COMPILER": "clang++" }
+    },
+    {
+      "name": "linux-sanitize",
+      "displayName": "Linux, Clang with AddressSanitizer and UndefinedBehaviorSanitizer",
+      "inherits": "linux-clang",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "PATHFINDING_SANITIZE": "ON" }
+    },
+    {
+      "name": "wasm",
+      "displayName": "WebAssembly, Emscripten from emsdk (on Windows or Linux)",
+      "inherits": "base",
+      "generator": "Ninja",
+      "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "windows-msvc", "configurePreset": "windows-msvc", "configuration": "RelWithDebInfo" },
+    { "name": "linux-gcc", "configurePreset": "linux-gcc" },
+    { "name": "linux-clang", "configurePreset": "linux-clang" },
+    { "name": "linux-sanitize", "configurePreset": "linux-sanitize" },
+    { "name": "wasm", "configurePreset": "wasm" }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    { "name": "windows-msvc", "inherits": "base", "configurePreset": "windows-msvc", "configuration": "RelWithDebInfo" },
+    { "name": "linux-gcc", "inherits": "base", "configurePreset": "linux-gcc" },
+    { "name": "linux-clang", "inherits": "base", "configurePreset": "linux-clang" },
+    { "name": "linux-sanitize", "inherits": "base", "configurePreset": "linux-sanitize" }
+  ],
+  "workflowPresets": [
+    {
+      "name": "windows-msvc",
+      "steps": [
+        { "type": "configure", "name": "windows-msvc" },
+        { "type": "build", "name": "windows-msvc" },
+        { "type": "test", "name": "windows-msvc" }
+      ]
+    },
+    {
+      "name": "linux-gcc",
+      "steps": [
+        { "type": "configure", "name": "linux-gcc" },
+        { "type": "build", "name": "linux-gcc" },
+        { "type": "test", "name": "linux-gcc" }
+      ]
+    },
+    {
+      "name": "linux-clang",
+      "steps": [
+        { "type": "configure", "name": "linux-clang" },
+        { "type": "build", "name": "linux-clang" },
+        { "type": "test", "name": "linux-clang" }
+      ]
+    },
+    {
+      "name": "linux-sanitize",
+      "steps": [
+        { "type": "configure", "name": "linux-sanitize" },
+        { "type": "build", "name": "linux-sanitize" },
+        { "type": "test", "name": "linux-sanitize" }
+      ]
+    },
+    {
+      "name": "wasm",
+      "steps": [
+        { "type": "configure", "name": "wasm" },
+        { "type": "build", "name": "wasm" }
+      ]
+    }
+  ]
+}

@@ -61,7 +61,7 @@ every app under eigenomar.com shows the same tab icon, eigenomar.com's lambda wi
 
 | ticket | title | size | needs | status |
 | --- | --- | --- | --- | --- |
-| [B1](#b1) | bootstrap: native, WebAssembly and web, built and deployed from GitHub Actions | xl | none | todo |
+| [B1](#b1) | bootstrap: native, WebAssembly and web, built and deployed from GitHub Actions | xl | none | in progress |
 | [M1](#m1) | core grid and test fixtures | m | B1 | todo |
 | [M2](#m2) | BFS, Dijkstra and A*, with heuristics and metrics | m | M1 | todo |
 | [M3](#m3) | compact event trace and Wasm interface | m | M2 | todo |
@@ -89,17 +89,18 @@ stage 0: the builds, checks and deploy every later ticket uses, set up once. `si
   - **delivery:** Cloudflare Workers serve the static assets on `paths.eigenomar.com`. GitHub Actions builds the WebAssembly module and deploys the result, since Cloudflare's own build doesn't run Emscripten, on every merge to `main`.
 - **needs:** nothing.
 - **done when:**
-  - [ ] a minimal C++20 library builds with CMake, with native tests and one benchmark target.
-  - [ ] that library compiles with Emscripten, and TypeScript calls a simple function it exports.
-  - [ ] a stable typed adapter handles Wasm initialization, errors and data transfer.
+  - [x] a minimal C++20 library builds with CMake, with native tests and one benchmark target.
+  - [x] that library compiles with Emscripten, and TypeScript calls a simple function it exports.
+  - [x] a stable typed adapter handles Wasm initialization, errors and data transfer.
   - [ ] linting and formatting, native sanitizers and CI checks are configured.
   - [ ] it builds natively on Windows and in CI on Linux, with Emscripten from `emsdk` on both, and the native tests pass on Windows started from `c:\` as well as from `C:\`.
-  - [ ] a minimal Vite and React shell has a canvas, basic controls and an about/source panel.
-  - [ ] the shell's tab shows the ecosystem's icon (shared decision SD5), served from the app's own assets, in a light and a dark browser theme.
+  - [x] a minimal Vite and React shell has a canvas, basic controls and an about/source panel.
+  - [x] the shell's tab shows the ecosystem's icon (shared decision SD5), served from the app's own assets, in a light and a dark browser theme.
   - [ ] a production static deployment on Cloudflare, built and deployed from GitHub Actions, answers at `paths.eigenomar.com`.
-  - [ ] the README lists what to install on each platform: the compiler, CMake, `emsdk` and Node. `CLAUDE.md`'s commands section lists the setup, build, test and run commands, each working on Windows and Linux.
-  - [ ] in the same change as the deploy, `project.yaml`'s `delivery` says `ci: github-actions`, `deployment: cloudflare` and `deploys_on: merge`, its `links.deployment` is `https://paths.eigenomar.com`, and `CLAUDE.md`'s delivery section says what CI runs and that every merge to `main` deploys. the ecosystem's validator passes.
+  - [x] the README lists what to install on each platform: the compiler, CMake, `emsdk` and Node. `CLAUDE.md`'s commands section lists the setup, build, test and run commands, each working on Windows and Linux.
+  - [x] in the same change as the deploy, `project.yaml`'s `delivery` says `ci: github-actions`, `deployment: cloudflare` and `deploys_on: merge`, its `links.deployment` is `https://paths.eigenomar.com`, and `CLAUDE.md`'s delivery section says what CI runs and that every merge to `main` deploys. the ecosystem's validator passes.
   - [ ] the result records what worked for the native and WebAssembly builds on each platform, for the ecosystem's conventions on native builds.
+- **progress, 25 november 2026:** the first session built everything but what needs CI's first run and the deploy: the engine with a probe in place of the grid, its GoogleTest tests and benchmark, the five presets, the Embind module with generated TypeScript declarations, the typed adapter, the shell with the icon, the lint script, `ci.yml` with its deploy job, `wrangler.jsonc`, and [docs/architecture.md](architecture.md), which records the layout and the portability findings so far. on Windows the native workflow (12 tests), the WebAssembly build, `npm run check` (13 tests) and the lint pass, the tests from `c:\` and `C:\` alike, and the built app runs under its content security policy in Chromium, in a light and a dark theme. left: the repository's Cloudflare secrets, CI's first run on Linux with the sanitizers and clang-tidy, the first deploy answering at `paths.eigenomar.com`, and the result.
 
 ## MVP
 
@@ -274,6 +275,7 @@ the ecosystem's contract, in `meta-eigenomar`, is adding two standards that ever
 
 ## log
 
+- 2026-11-25 · B1 · in progress: the builds, checks, shell and deploy workflow, verified on Windows. CI's first run on Linux and the first deploy are left, as B1's progress note says.
 - 2026-11-20 · B1 · added the ecosystem's tab icon (shared decision SD5) to B1's checklist, at the owner's request, rather than a ticket of its own: the shell B1 builds is the first page the lab deploys. B1's size is unchanged.
 - 2026-11-18 · plan · added DOC1 and SCM1, in two new lanes, at the owner's request: this repository's adoption of the ecosystem's document standard and SCM strategy, which are designed in `meta-eigenomar`. each needs its standard, so its issue waits in the backlog.
 - 2026-11-14 · plan · created by the ecosystem setup session, from the three C++ labs' shared plan, where this lab's part is now a link here. its stage 0 became B1, its section the MVP's scope and constraints with stage 1's five steps as M1–M5, and its phase 2 L1–L6, in the same order. the MVP's seven acceptance criteria are in M2–M5's done-whens. the shared constraints and the definition of done are shared decision SD3, cited by its id. `project.yaml` validates, with no CI, releases or deployment until B1, `CLAUDE.md` imports the ecosystem's shared rules, and `.gitattributes` holds `* text=auto eol=lf`. nothing else in the repository changed.

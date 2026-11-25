@@ -12,18 +12,19 @@ status: active
 tags: [c++, webassembly, pathfinding, graph-search]
 
 links:
-  deployment: null                 # not deployed yet; planned for paths.eigenomar.com, which B1 sets (docs/plan.md)
+  deployment: https://paths.eigenomar.com
 
 documents:
   plan: docs/plan.md
-  architecture: null               # no code yet
+  architecture: docs/architecture.md
   engineering: null
   decisions: null
 
 delivery:
-  ci: none                         # B1 adds CI on GitHub Actions
+  ci: github-actions               # .github/workflows/ci.yml: native tests with sanitizers, lint, WebAssembly and app checks
   releases: none
-  deployment: none                 # B1 adds the deploy to Cloudflare, with deploys_on: merge
+  deployment: cloudflare           # Workers static assets, deployed by ci.yml once every check passes
+  deploys_on: merge                # every push to main deploys
 
 artifacts:
   diagrams: null

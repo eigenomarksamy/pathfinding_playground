@@ -1,0 +1,11 @@
+# CMake's build trees, one per preset
+build/
+
+# the web app's dependencies and output
+web/node_modules/
+web/dist/
+# the WebAssembly module, which `npm run wasm` builds and installs here
+web/src/engine/wasm/
+
+# Wrangler's local state
+.wrangler/

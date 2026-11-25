@@ -1,0 +1,205 @@
+# Checks every push and pull request, and deploys every push to main once every check passes.
+# Linux covers Linux here. Windows is covered by local development (the README's Windows setup).
+# The deploy needs two repository secrets, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
+# (README, "deploy").
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Emscripten, pinned. The README asks for the same version from emsdk.
+  EMSDK_VERSION: 7.0.1
+
+jobs:
+  native:
+    name: native (${{ matrix.preset }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [linux-gcc, linux-clang, linux-sanitize]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install Ninja
+        run: command -v ninja || sudo apt-get install -y ninja-build
+      - name: Configure, build and test
+        id: workflow
+        run: cmake --workflow --preset ${{ matrix.preset }} 2>&1 | tee workflow.log
+      - name: Benchmark
+        id: benchmark
+        if: matrix.preset == 'linux-gcc'
+        run: build/linux-gcc/benchmarks/pathfinding_benchmark | tee benchmark.log
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## native (${{ matrix.preset }})"
+            echo
+            echo "${{ job.status == 'success' && 'done' || 'failed' }}"
+            echo
+            echo "- configure, build and test: ${{ steps.workflow.outcome }}"
+            grep -E 'tests passed|tests failed out of' workflow.log | sed 's/^/- /' || echo "- no tests ran"
+            if [ -f benchmark.log ]; then sed 's/^/- benchmark: /' benchmark.log; fi
+            if [ "${{ steps.workflow.outcome }}" = failure ]; then
+              grep -E '(error:|\*\*\*Failed|FAILED|Failed  )' workflow.log | head -20 | sed 's/^/- /' || true
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  lint:
+    name: lint (clang-format, clang-tidy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+      - name: Install Ninja
+        run: command -v ninja || sudo apt-get install -y ninja-build
+      - name: Configure, for the compile database
+        id: configure
+        run: cmake --preset linux-clang
+      - name: Lint
+        id: lint
+        run: uv run scripts/lint.py --require-tidy 2>&1 | tee lint.log
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## lint"
+            echo
+            echo "${{ job.status == 'success' && 'done' || 'failed' }}"
+            echo
+            echo "- configure: ${{ steps.configure.outcome }}"
+            echo "- lint: ${{ steps.lint.outcome }}"
+            if [ -f lint.log ]; then
+              grep -E '^clang-(format|tidy):' lint.log | sed 's/^/- /'
+              grep -E ': (error|warning):' lint.log | head -20 | sed -E 's#^.*/(cpp|benchmarks)/#- \1/#' || true
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  web:
+    name: web (WebAssembly, app checks and build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
+        with:
+          version: ${{ env.EMSDK_VERSION }}
+          actions-cache-folder: emsdk-cache
+      - name: Check emsdk
+        run: |
+          command -v ninja || sudo apt-get install -y ninja-build
+          test -n "$EMSDK" || { echo "EMSDK isn't set, so the wasm preset can't find its toolchain"; exit 1; }
+          emcc --version | head -1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Build the WebAssembly module
+        id: wasm
+        run: npm run wasm
+      - name: Check (types, format, tests)
+        id: check
+        run: npm run check 2>&1 | tee check.log
+      - name: Build the app
+        id: build
+        run: npm run build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: web-dist
+          path: web/dist
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## web"
+            echo
+            echo "${{ job.status == 'success' && 'done' || 'failed' }}"
+            echo
+            echo "- WebAssembly module (Emscripten $EMSDK_VERSION): ${{ steps.wasm.outcome }}"
+            echo "- types, format and tests: ${{ steps.check.outcome }}"
+            if [ -f check.log ]; then grep -E '^\s+Tests\s' check.log | sed -E 's/^\s+/- /' || true; fi
+            echo "- app build: ${{ steps.build.outcome }}"
+            if [ -d dist ]; then echo "- built $(find dist -type f | wc -l) files, $(du -sh dist | cut -f1)"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: deploy (paths.eigenomar.com)
+    needs: [native, lint, web]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # one deploy at a time, in push order
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    defaults:
+      run:
+        # naming bash turns on pipefail, so a failed deploy still fails through the sed below
+        shell: bash
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: web-dist
+          path: web/dist
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # the build the web job checked, deployed as it is. this repository's logs are public,
+      # and sed hides any workers.dev address Wrangler prints.
+      - name: Deploy
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: npm run deploy -- --message "$GITHUB_SHA" 2>&1 | sed -E 's#https://[^[:space:]]*workers\.dev#<workers.dev address>#g'
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## deploy"
+            echo
+            echo "${{ job.status == 'success' && 'done' || 'failed' }}"
+            echo
+            echo "- deploy of ${GITHUB_SHA::7} to https://paths.eigenomar.com: ${{ steps.deploy.outcome }}"
+            if [ "${{ steps.deploy.outcome }}" = failure ]; then
+              echo "- check the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets, and the Deploy step's log"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

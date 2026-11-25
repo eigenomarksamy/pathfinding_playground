@@ -1,0 +1,6 @@
+dist/
+node_modules/
+.wrangler/
+src/engine/wasm/
+package-lock.json
+public/_headers

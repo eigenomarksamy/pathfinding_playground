@@ -1,0 +1,182 @@
+:root {
+  color-scheme: light dark;
+  --ink: #19191d;
+  --paper: #f6f6f3;
+  --accent: #8fb6e3;
+  --muted: #5c5c66;
+  --line: #d4d4cf;
+  --cell-background: #ecece8;
+  --cell-lit: #3b6ea5;
+  --danger: #a12a2a;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8e8ea;
+    --paper: #19191d;
+    --muted: #a2a2ab;
+    --line: #34343b;
+    --cell-background: #222228;
+    --cell-lit: #8fb6e3;
+    --danger: #f08a8a;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18rem;
+  gap: 1.5rem;
+  align-items: start;
+  flex: 1;
+}
+
+@media (max-width: 52rem) {
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.playground {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  image-rendering: pixelated;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+button,
+.button {
+  font: inherit;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover,
+.button:hover {
+  border-color: var(--accent);
+}
+
+button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #19191d;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.speed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-count,
+.speed output {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.about {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.about p {
+  margin: 0 0 0.75rem;
+}
+
+.about dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+}
+
+.about dt {
+  color: var(--muted);
+}
+
+.about dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: inherit;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.status {
+  color: var(--muted);
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

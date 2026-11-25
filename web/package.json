@@ -1,0 +1,34 @@
+{
+  "name": "pathfinding-playground-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "the pathfinding playground's web app: a React shell over the C++ engine, compiled to WebAssembly.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "wasm": "cd .. && cmake --workflow --preset wasm && cmake --install build/wasm --prefix web/src/engine/wasm",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "check": "tsc && prettier --check . && vitest run",
+    "preview": "wrangler dev --config ../wrangler.jsonc",
+    "deploy": "wrangler deploy --config ../wrangler.jsonc"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.1",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "prettier": "3.10.1",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.1",
+    "wrangler": "4.168.0"
+  }
+}

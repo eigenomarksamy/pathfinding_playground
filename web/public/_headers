@@ -1,0 +1,7 @@
+# response headers for every static asset, read by Cloudflare Workers static assets and never served.
+# 'wasm-unsafe-eval' lets the page compile the engine's WebAssembly. nothing else runs but the app's own scripts.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
