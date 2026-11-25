@@ -92,8 +92,8 @@ stage 0: the builds, checks and deploy every later ticket uses, set up once. `si
   - [x] a minimal C++20 library builds with CMake, with native tests and one benchmark target.
   - [x] that library compiles with Emscripten, and TypeScript calls a simple function it exports.
   - [x] a stable typed adapter handles Wasm initialization, errors and data transfer.
-  - [ ] linting and formatting, native sanitizers and CI checks are configured.
-  - [ ] it builds natively on Windows and in CI on Linux, with Emscripten from `emsdk` on both, and the native tests pass on Windows started from `c:\` as well as from `C:\`.
+  - [x] linting and formatting, native sanitizers and CI checks are configured.
+  - [x] it builds natively on Windows and in CI on Linux, with Emscripten from `emsdk` on both, and the native tests pass on Windows started from `c:\` as well as from `C:\`.
   - [x] a minimal Vite and React shell has a canvas, basic controls and an about/source panel.
   - [x] the shell's tab shows the ecosystem's icon (shared decision SD5), served from the app's own assets, in a light and a dark browser theme.
   - [ ] a production static deployment on Cloudflare, built and deployed from GitHub Actions, answers at `paths.eigenomar.com`.
@@ -101,6 +101,7 @@ stage 0: the builds, checks and deploy every later ticket uses, set up once. `si
   - [x] in the same change as the deploy, `project.yaml`'s `delivery` says `ci: github-actions`, `deployment: cloudflare` and `deploys_on: merge`, its `links.deployment` is `https://paths.eigenomar.com`, and `CLAUDE.md`'s delivery section says what CI runs and that every merge to `main` deploys. the ecosystem's validator passes.
   - [ ] the result records what worked for the native and WebAssembly builds on each platform, for the ecosystem's conventions on native builds.
 - **progress, 25 november 2026:** the first session built everything but what needs CI's first run and the deploy: the engine with a probe in place of the grid, its GoogleTest tests and benchmark, the five presets, the Embind module with generated TypeScript declarations, the typed adapter, the shell with the icon, the lint script, `ci.yml` with its deploy job, `wrangler.jsonc`, and [docs/architecture.md](architecture.md), which records the layout and the portability findings so far. on Windows the native workflow (12 tests), the WebAssembly build, `npm run check` (13 tests) and the lint pass, the tests from `c:\` and `C:\` alike, and the built app runs under its content security policy in Chromium, in a light and a dark theme. left: the repository's Cloudflare secrets, CI's first run on Linux with the sanitizers and clang-tidy, the first deploy answering at `paths.eigenomar.com`, and the result.
+- **progress, 25 november 2026, later:** CI's first run, at 151b6a3, passed every job but the lint, where clang-tidy, which runs only in CI, rejected `#pragma once` (`portability-avoid-pragma-once`). 8229791 moved both headers to include guards, and its run passed the native jobs on GCC 15.2 and Clang 21.1 with the sanitizers (12 tests each), the lint, and the WebAssembly build and app checks with Emscripten 7.0.1, on `ubuntu-26.04`. its deploy failed only because the repository has no Cloudflare secrets yet. left: the secrets, the deploy answering at `paths.eigenomar.com`, and the result.
 
 ## MVP
 
@@ -275,6 +276,7 @@ the ecosystem's contract, in `meta-eigenomar`, is adding two standards that ever
 
 ## log
 
+- 2026-11-25 · B1 · in progress: CI passes on Linux at 8229791, after clang-tidy's first run moved the headers to include guards. the deploy waits for the repository's Cloudflare secrets.
 - 2026-11-25 · B1 · in progress: the builds, checks, shell and deploy workflow, verified on Windows. CI's first run on Linux and the first deploy are left, as B1's progress note says.
 - 2026-11-20 · B1 · added the ecosystem's tab icon (shared decision SD5) to B1's checklist, at the owner's request, rather than a ticket of its own: the shell B1 builds is the first page the lab deploys. B1's size is unchanged.
 - 2026-11-18 · plan · added DOC1 and SCM1, in two new lanes, at the owner's request: this repository's adoption of the ecosystem's document standard and SCM strategy, which are designed in `meta-eigenomar`. each needs its standard, so its issue waits in the backlog.
