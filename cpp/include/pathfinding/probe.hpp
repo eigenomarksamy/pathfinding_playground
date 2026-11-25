@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PATHFINDING_PROBE_HPP
+#define PATHFINDING_PROBE_HPP
 
 #include <cstddef>
 #include <cstdint>
@@ -39,3 +40,5 @@ struct Extent {
                                 std::span<std::uint8_t> cells) noexcept;
 
 } // namespace pathfinding::probe
+
+#endif // PATHFINDING_PROBE_HPP

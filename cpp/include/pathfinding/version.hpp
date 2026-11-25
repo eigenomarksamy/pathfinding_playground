@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PATHFINDING_VERSION_HPP
+#define PATHFINDING_VERSION_HPP
 
 #include <string_view>
 
@@ -8,3 +9,5 @@ namespace pathfinding {
 [[nodiscard]] std::string_view engine_version() noexcept;
 
 } // namespace pathfinding
+
+#endif // PATHFINDING_VERSION_HPP
