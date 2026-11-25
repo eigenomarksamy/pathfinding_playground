@@ -2,7 +2,7 @@
 
 an interactive laboratory for graph search: build a map, pick a solver, watch its decisions step by step, and compare how algorithms find a route. the search runs in a C++20 engine, compiled to WebAssembly for a React and TypeScript app in the browser, and natively for tests and benchmarks. there is no server.
 
-it is in its bootstrap: the builds, the checks and the deploy are in place, and the engine holds only a probe, a pattern of moving bands, until the grid and the solvers arrive. it is planned for [paths.eigenomar.com](https://paths.eigenomar.com). the plan is [docs/plan.md](docs/plan.md), and the design [docs/architecture.md](docs/architecture.md).
+its bootstrap is done: the builds, the checks and the deploy are in place, and the engine holds only a probe, a pattern of moving bands, until the grid and the solvers arrive. it runs at [paths.eigenomar.com](https://paths.eigenomar.com). the plan is [docs/plan.md](docs/plan.md), and the design [docs/architecture.md](docs/architecture.md).
 
 ## what to install
 

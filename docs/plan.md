@@ -1,8 +1,8 @@
 # pathfinding playground plan
 
-an interactive laboratory for graph search. users create maps, select a solver, observe its decisions, and compare how quickly and efficiently algorithms find a route. the search runs in C++20, compiled to WebAssembly for the browser and natively for tests and benchmarks, with no server. it is planned for `paths.eigenomar.com`.
+an interactive laboratory for graph search. users create maps, select a solver, observe its decisions, and compare how quickly and efficiently algorithms find a route. the search runs in C++20, compiled to WebAssembly for the browser and natively for tests and benchmarks, with no server. it deploys to `paths.eigenomar.com`.
 
-nothing is built yet. this plan holds the bootstrap (B1), the MVP (M1–M5) phase 2 (L1–L6), the adoption of the ecosystem's standards (DOC1, SCM1), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
+the bootstrap, B1, is done: the builds, checks and deploy are in place, and the engine holds only a probe until M1. this plan holds the bootstrap (B1), the MVP (M1–M5) phase 2 (L1–L6), the adoption of the ecosystem's standards (DOC1, SCM1), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
 
 ## how this plan works
 
@@ -61,7 +61,7 @@ every app under eigenomar.com shows the same tab icon, eigenomar.com's lambda wi
 
 | ticket | title | size | needs | status |
 | --- | --- | --- | --- | --- |
-| [B1](#b1) | bootstrap: native, WebAssembly and web, built and deployed from GitHub Actions | xl | none | in progress |
+| [B1](#b1) | bootstrap: native, WebAssembly and web, built and deployed from GitHub Actions | xl | none | done |
 | [M1](#m1) | core grid and test fixtures | m | B1 | todo |
 | [M2](#m2) | BFS, Dijkstra and A*, with heuristics and metrics | m | M1 | todo |
 | [M3](#m3) | compact event trace and Wasm interface | m | M2 | todo |
@@ -96,12 +96,17 @@ stage 0: the builds, checks and deploy every later ticket uses, set up once. `si
   - [x] it builds natively on Windows and in CI on Linux, with Emscripten from `emsdk` on both, and the native tests pass on Windows started from `c:\` as well as from `C:\`.
   - [x] a minimal Vite and React shell has a canvas, basic controls and an about/source panel.
   - [x] the shell's tab shows the ecosystem's icon (shared decision SD5), served from the app's own assets, in a light and a dark browser theme.
-  - [ ] a production static deployment on Cloudflare, built and deployed from GitHub Actions, answers at `paths.eigenomar.com`.
+  - [x] a production static deployment on Cloudflare, built and deployed from GitHub Actions, answers at `paths.eigenomar.com`.
   - [x] the README lists what to install on each platform: the compiler, CMake, `emsdk` and Node. `CLAUDE.md`'s commands section lists the setup, build, test and run commands, each working on Windows and Linux.
   - [x] in the same change as the deploy, `project.yaml`'s `delivery` says `ci: github-actions`, `deployment: cloudflare` and `deploys_on: merge`, its `links.deployment` is `https://paths.eigenomar.com`, and `CLAUDE.md`'s delivery section says what CI runs and that every merge to `main` deploys. the ecosystem's validator passes.
-  - [ ] the result records what worked for the native and WebAssembly builds on each platform, for the ecosystem's conventions on native builds.
+  - [x] the result records what worked for the native and WebAssembly builds on each platform, for the ecosystem's conventions on native builds.
 - **progress, 25 november 2026:** the first session built everything but what needs CI's first run and the deploy: the engine with a probe in place of the grid, its GoogleTest tests and benchmark, the five presets, the Embind module with generated TypeScript declarations, the typed adapter, the shell with the icon, the lint script, `ci.yml` with its deploy job, `wrangler.jsonc`, and [docs/architecture.md](architecture.md), which records the layout and the portability findings so far. on Windows the native workflow (12 tests), the WebAssembly build, `npm run check` (13 tests) and the lint pass, the tests from `c:\` and `C:\` alike, and the built app runs under its content security policy in Chromium, in a light and a dark theme. left: the repository's Cloudflare secrets, CI's first run on Linux with the sanitizers and clang-tidy, the first deploy answering at `paths.eigenomar.com`, and the result.
 - **progress, 25 november 2026, later:** CI's first run, at 151b6a3, passed every job but the lint, where clang-tidy, which runs only in CI, rejected `#pragma once` (`portability-avoid-pragma-once`). 8229791 moved both headers to include guards, and its run passed the native jobs on GCC 15.2 and Clang 21.1 with the sanitizers (12 tests each), the lint, and the WebAssembly build and app checks with Emscripten 7.0.1, on `ubuntu-26.04`. its deploy failed only because the repository has no Cloudflare secrets yet. left: the secrets, the deploy answering at `paths.eigenomar.com`, and the result.
+- **result, 25 november 2026:** done at 0429503, whose CI run passed every job and deployed. `paths.eigenomar.com` answers with the shell, its content security policy and the ecosystem's tab icon. the code is 151b6a3, with 8229791 for clang-tidy's finding and 0429503 for the headers' final newlines. what worked for each build, which [docs/architecture.md](architecture.md#portability-findings) records in full:
+  - **native on Windows:** MSVC through Visual Studio's generator, with no developer prompt, and MinGW-w64 GCC with Ninja, both with warnings as errors. the tests pass from `c:\` and `C:\`.
+  - **native on Linux:** GCC 15.2, Clang 21.1, and Clang with AddressSanitizer and UndefinedBehaviorSanitizer, on `ubuntu-26.04` in CI.
+  - **WebAssembly:** `emsdk` 7.0.1 on both platforms, natively on Windows, with `EMSDK` from `emsdk_env` and Ninja on `PATH`. Cloudflare's build can't run Emscripten, so GitHub Actions builds and deploys.
+  - **lint:** clang-format and clang-tidy pinned from PyPI and run through `uv`, so both platforms run the same versions without LLVM. clang-tidy needs a compile database, which the Visual Studio generator doesn't write, so on Windows it runs only with a Ninja build, and CI's first run was the first to run it.
 
 ## MVP
 
@@ -276,6 +281,7 @@ the ecosystem's contract, in `meta-eigenomar`, is adding two standards that ever
 
 ## log
 
+- 2026-11-25 · B1 · done at 0429503: CI passes and deploys, and `paths.eigenomar.com` answers with the shell and the ecosystem's tab icon. the result records what worked for each build.
 - 2026-11-25 · B1 · in progress: CI passes on Linux at 8229791, after clang-tidy's first run moved the headers to include guards. the deploy waits for the repository's Cloudflare secrets.
 - 2026-11-25 · B1 · in progress: the builds, checks, shell and deploy workflow, verified on Windows. CI's first run on Linux and the first deploy are left, as B1's progress note says.
 - 2026-11-20 · B1 · added the ecosystem's tab icon (shared decision SD5) to B1's checklist, at the owner's request, rather than a ticket of its own: the shell B1 builds is the first page the lab deploys. B1's size is unchanged.
