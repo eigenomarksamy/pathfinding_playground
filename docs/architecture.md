@@ -18,7 +18,7 @@ native tests and benchmark              cpp/tests/, benchmarks/
 └── the same C++20 engine
 ```
 
-- **the engine** (`cpp/`) is a static library, `pathfinding_engine`, with no rendering, browser or framework code. both builds compile the same sources. until M1, it holds only the bootstrap's probe, `pathfinding::probe`: a pattern of diagonal bands that moves one cell per step, which tests the builds, the bounds checks and the transfer of a frame.
+- **the engine** (`cpp/`) is a static library, `pathfinding_engine`, with no rendering, browser or framework code. both builds compile the same sources. until M7, it holds only the bootstrap's probe, `pathfinding::probe`: a pattern of diagonal bands that moves one cell per step, which tests the builds, the bounds checks and the transfer of a frame.
 - **the boundary** (`cpp/bindings/engine_bindings.cpp`) is Embind, and stays small and batched: a call returns a whole frame as one `Uint8Array`, copied into memory JavaScript owns, never one call per cell. the engine returns status codes, not exceptions, so the module is built without C++ exception support. `--emit-tsd` generates `pathfinding.d.ts`, the module's TypeScript declarations, at build time.
 - **the adapter** (`web/src/engine/engine.ts`) is the only code that imports the module. it loads it, checks the app's arguments, and turns the engine's statuses and any failure into an `EngineError` with a code: `load_failed`, `invalid_input`, `invalid_size` or `unexpected`.
 - **the app** steps the simulation on a fixed clock, apart from the display's frame rate, and caps the steps per frame, so a hidden tab can't flood the engine. with reduced motion asked for, it starts paused.

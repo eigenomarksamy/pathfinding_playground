@@ -7,7 +7,7 @@
 
 // the bootstrap's stand-in for the engine: a pattern of diagonal bands that moves one cell
 // per step. it exercises the native and WebAssembly builds, the bounds checks, and the
-// batched transfer of a whole frame to the app. M1's grid replaces it.
+// batched transfer of a whole frame to the app. M7's grid replaces it.
 namespace pathfinding::probe {
 
 // the largest width or height the probe accepts, so no input can freeze the tab.

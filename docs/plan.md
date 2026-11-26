@@ -2,7 +2,7 @@
 
 an interactive laboratory for graph search. users create maps, select a solver, observe its decisions, and compare how quickly and efficiently algorithms find a route. the search runs in C++20, compiled to WebAssembly for the browser and natively for tests and benchmarks, with no server. it deploys to `paths.eigenomar.com`.
 
-the bootstrap, B1, is done: the builds, checks and deploy are in place, and the engine holds only a probe until M1. this plan holds the bootstrap (B1), the MVP (M1–M5) phase 2 (L1–L6), the adoption of the ecosystem's standards (DOC1, SCM1), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
+the bootstrap, B1, is done: the builds, checks and deploy are in place, and the engine holds only a probe until M7. this plan holds the bootstrap (B1), the MVP (M7–M11) phase 2 (L15–L19 and L6), the adoption of the ecosystem's standards (DOC8, SCM8), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
 
 ## how this plan works
 
@@ -53,7 +53,7 @@ the three C++ labs share their constraints, stack, architecture and definition o
 - **the architecture:** a React and TypeScript UI, over a typed Wasm adapter (input validation and conversion, batched snapshots or events, the module's lifecycle and errors), over a WebAssembly module of the C++20 engine, which a native test and benchmark executable also builds.
 - **the layout:** the suggested one, with `cpp/` (include, src, bindings, tests), `web/`, `benchmarks/`, `docs/`, `CMakeLists.txt`, `CMakePresets.json`, `wrangler.jsonc` and `.github/workflows/` beside `CLAUDE.md`, `project.yaml`, `README.md`, `LICENSE` and `.gitattributes`.
 - **no shared library yet:** common code is extracted only once at least two labs need it.
-- **done:** each public release meets SD3's definition of done, which [M5](#m5)'s done-when cites.
+- **done:** each public release meets SD3's definition of done, which [M11](#m11)'s done-when cites.
 
 every app under eigenomar.com shows the same tab icon, eigenomar.com's lambda with its two colors swapped, a light-blue tile and a near-black lambda: shared decision SD5. [B1](#b1)'s shell takes it, so the lab is never deployed without it.
 
@@ -62,19 +62,19 @@ every app under eigenomar.com shows the same tab icon, eigenomar.com's lambda wi
 | ticket | title | size | needs | status |
 | --- | --- | --- | --- | --- |
 | [B1](#b1) | bootstrap: native, WebAssembly and web, built and deployed from GitHub Actions | xl | none | done |
-| [M1](#m1) | core grid and test fixtures | m | B1 | todo |
-| [M2](#m2) | BFS, Dijkstra and A*, with heuristics and metrics | m | M1 | todo |
-| [M3](#m3) | compact event trace and Wasm interface | m | M2 | todo |
-| [M4](#m4) | grid editor, animation, controls and example maps | l | M3 | todo |
-| [M5](#m5) | release: accessibility, tests, deployment and README | m | M4 | todo |
-| [L1](#l1) | bidirectional search and weighted A* | m | M5 | todo |
-| [L2](#l2) | ant colony optimization and genetic algorithms | l | M5 | todo |
-| [L3](#l3) | maze generation, and map import and export | m | M5 | todo |
-| [L4](#l4) | comparison mode | m | M5 | todo |
-| [L5](#l5) | continuous motion planning with RRT and RRT* | l | M5 | todo |
-| [L6](#l6) | text execution trace and grid descriptions | m | M5 | todo |
-| [DOC1](#doc1) | the lab's documents | tbd | `meta-eigenomar` ST1 | todo |
-| [SCM1](#scm1) | the ecosystem's SCM strategy | tbd | `meta-eigenomar` ST2 | todo |
+| [M7](#m7) | core grid and test fixtures | m | B1 | todo |
+| [M8](#m8) | BFS, Dijkstra and A*, with heuristics and metrics | m | M7 | todo |
+| [M9](#m9) | compact event trace and Wasm interface | m | M8 | todo |
+| [M10](#m10) | grid editor, animation, controls and example maps | l | M9 | todo |
+| [M11](#m11) | release: accessibility, tests, deployment and README | m | M10 | todo |
+| [L15](#l15) | bidirectional search and weighted A* | m | M11 | todo |
+| [L16](#l16) | ant colony optimization and genetic algorithms | l | M11 | todo |
+| [L17](#l17) | maze generation, and map import and export | m | M11 | todo |
+| [L18](#l18) | comparison mode | m | M11 | todo |
+| [L19](#l19) | continuous motion planning with RRT and RRT* | l | M11 | todo |
+| [L6](#l6) | text execution trace and grid descriptions | m | M11 | todo |
+| [DOC8](#doc8) | the lab's documents | tbd | `meta-eigenomar` ST1 | todo |
+| [SCM8](#scm8) | the ecosystem's SCM strategy | tbd | `meta-eigenomar` ST2 | todo |
 
 ## bootstrap
 
@@ -110,7 +110,7 @@ stage 0: the builds, checks and deploy every later ticket uses, set up once. `si
 
 ## MVP
 
-stage 1: one polished, bounded release at `paths.eigenomar.com`. the core's correctness tests come before any time spent on animation, so M1–M3 come before M4. the MVP's acceptance criteria are spread over M1–M5's done-whens, each in the ticket that delivers it, and M5 releases the MVP once they all hold.
+stage 1: one polished, bounded release at `paths.eigenomar.com`. the core's correctness tests come before any time spent on animation, so M7–M9 come before M10. the MVP's acceptance criteria are spread over M7–M11's done-whens, each in the ticket that delivers it, and M11 releases the MVP once they all hold.
 
 **scope:**
 
@@ -145,9 +145,9 @@ heuristics
 metrics + reproducible map generation
 ```
 
-<a id="m1"></a>
+<a id="m7"></a>
 
-### M1 · core grid and test fixtures
+### M7 · core grid and test fixtures
 
 - **do:** the grid, its coordinates and its movement policy: a rectangular grid with start, goal, walls and optional weighted terrain, 4-way or 8-way movement, and the no-corner-cutting rule for diagonal moves, in one grid graph and cost definition that every algorithm uses. reproducible map generation from a seed, and the canonical test maps the algorithms are tested on.
 - **needs:** B1.
@@ -156,99 +156,99 @@ metrics + reproducible map generation
   - a map generated twice from the same seed is identical, and a test checks it.
   - canonical test maps exist for an open grid, walls, weighted terrain, start equal to goal, no path, blocked cells, a tiny grid and a large grid, and each loads without error.
 
-<a id="m2"></a>
+<a id="m8"></a>
 
-### M2 · BFS, Dijkstra and A*, with heuristics and metrics
+### M8 · BFS, Dijkstra and A*, with heuristics and metrics
 
-- **do:** BFS, Dijkstra and A* on M1's grid, A*'s heuristics, and each run's result and metrics: path cost, path length, expanded nodes, runtime and result state (`found`, `unreachable`, `cancelled`). runtime is the algorithm's compute time, never animation or frame time.
-- **needs:** M1.
+- **do:** BFS, Dijkstra and A* on M7's grid, A*'s heuristics, and each run's result and metrics: path cost, path length, expanded nodes, runtime and result state (`found`, `unreachable`, `cancelled`). runtime is the algorithm's compute time, never animation or frame time.
+- **needs:** M7.
 - **done when:**
   - BFS, Dijkstra and A* return the expected results on the canonical test maps, start equal to goal, no path, blocked cells, and the tiny and large grids included.
   - Dijkstra and A* agree on the minimum path cost wherever the heuristic is valid, with Manhattan for 4-way unit steps and octile for 8-way diagonal costs.
   - a negative weight is rejected with an error, never searched.
   - every run reports its path cost, path length, expanded nodes, compute time and result state, and a cancelled run reports `cancelled`.
 
-<a id="m3"></a>
+<a id="m9"></a>
 
-### M3 · compact event trace and Wasm interface
+### M9 · compact event trace and Wasm interface
 
 - **do:** each search records an inspectable trace of its events, or bounded batches of them, so the renderer reads the trace and never the search's internals. the engine's Embind interface hands the app the run, its metrics and its trace in batches, through B1's typed adapter.
-- **needs:** M2.
+- **needs:** M8.
 - **done when:**
   - the same seed, input and algorithm yield an identical search trace, and a test checks it.
   - the trace crosses the Wasm boundary in bounded batches, never one call per explored node.
   - the native and WebAssembly builds pass the same correctness fixtures.
   - invalid input from the app comes back through the adapter as a typed error, not a crash.
 
-<a id="m4"></a>
+<a id="m10"></a>
 
-### M4 · grid editor, animation, controls and example maps
+### M10 · grid editor, animation, controls and example maps
 
-- **do:** the MVP's scope in the app, on B1's shell: the grid editor, the algorithm and movement choice with the exact movement and corner-cutting policy shown, the step-by-step frontier, visited nodes and final path from M3's trace, the controls, the preset maps, the metrics side by side, and a short explanation of each algorithm and when it is appropriate.
-- **needs:** M3.
+- **do:** the MVP's scope in the app, on B1's shell: the grid editor, the algorithm and movement choice with the exact movement and corner-cutting policy shown, the step-by-step frontier, visited nodes and final path from M9's trace, the controls, the preset maps, the metrics side by side, and a short explanation of each algorithm and when it is appropriate.
+- **needs:** M9.
 - **done when:**
   - changing the algorithm updates the metrics and the visual output meaningfully.
   - BFS is disabled for weighted or diagonal-cost comparisons, or its limitation is explained where it is chosen.
-  - the runtime shown is M2's compute time, apart from animation time.
+  - the runtime shown is M8's compute time, apart from animation time.
   - interactions stay responsive on a documented default grid, around 40 × 30 cells, and larger grids are bounded and profiled.
   - each preset map loads, and play, pause, single step, restart and speed work on it.
   - the footer's `eigenomar.com` button opens `https://eigenomar.com` in a new tab, so an edited map survives.
 
-<a id="m5"></a>
+<a id="m11"></a>
 
-### M5 · release: accessibility, tests, deployment and README
+### M11 · release: accessibility, tests, deployment and README
 
 - **do:** an accessibility pass, the app's tests, the MVP's deployment at `paths.eigenomar.com` through B1's pipeline, and the README.
-- **needs:** M4.
+- **needs:** M10.
 - **done when:**
   - shared decision SD3's definition of done for each public release holds for everything this repository delivers. its items that other repositories deliver once the demo is live, the site's software entry among them, follow this ticket.
   - the deployed demo, the public README and the source link work without a backend.
   - every control works by keyboard, the layout has a working mobile fallback, and a reduced-motion preference stops nonessential animation.
   - Vitest covers the app's logic and a Playwright smoke test the deployed build, both in CI.
-  - M1–M4's done-whens hold on the deployed build.
+  - M7–M10's done-whens hold on the deployed build.
 
 ## phase 2
 
-not MVP. it starts once the MVP is released ([M5](#m5)), and keeps the advanced algorithms out of the MVP's scope. each ticket uses the MVP's grid, trace and metrics where it can.
+not MVP. it starts once the MVP is released ([M11](#m11)), and keeps the advanced algorithms out of the MVP's scope. each ticket uses the MVP's grid, trace and metrics where it can.
 
-<a id="l1"></a>
+<a id="l15"></a>
 
-### L1 · bidirectional search and weighted A*
+### L15 · bidirectional search and weighted A*
 
 - **do:** bidirectional search and **weighted A*** with clear optimality tradeoffs.
-- **needs:** M5.
+- **needs:** M11.
 - **done when:** both run on the canonical test maps, tests compare their path costs with Dijkstra's, and the app shows each one's cost beside the minimum and explains its optimality tradeoff.
 
-<a id="l2"></a>
+<a id="l16"></a>
 
-### L2 · ant colony optimization and genetic algorithms
+### L16 · ant colony optimization and genetic algorithms
 
 - **do:** metaheuristic solvers such as **ant colony optimization** and **genetic algorithms**, compared with the exact solvers on the same maps.
-- **needs:** M5.
+- **needs:** M11.
 - **done when:** both run on the same maps as BFS, Dijkstra and A*, the same seed and map give the same result, and the app shows their results beside the exact solvers' and says they are approximations that need not find the minimum.
 
-<a id="l3"></a>
+<a id="l17"></a>
 
-### L3 · maze generation, and map import and export
+### L17 · maze generation, and map import and export
 
 - **do:** maze generation and imported/exported map definitions.
-- **needs:** M5.
+- **needs:** M11.
 - **done when:** the same seed generates the same maze, an exported map imports back unchanged, and an invalid or oversized import is rejected with a message.
 
-<a id="l4"></a>
+<a id="l18"></a>
 
-### L4 · comparison mode
+### L18 · comparison mode
 
 - **do:** comparison mode with synchronized runs and a summary chart.
-- **needs:** M5.
+- **needs:** M11.
 - **done when:** two or more algorithms run in step on one map under one set of controls, and a summary chart compares their metrics.
 
-<a id="l5"></a>
+<a id="l19"></a>
 
-### L5 · continuous motion planning with RRT and RRT*
+### L19 · continuous motion planning with RRT and RRT*
 
 - **do:** continuous 2D **motion planning** with **RRT / RRT*** as a separate scene type, not a forced extension of grid search.
-- **needs:** M5.
+- **needs:** M11.
 - **done when:** a continuous scene type, separate from the grid, plans with RRT and RRT* from a seed, the same seed gives the same plan, and tests check that a found path avoids every obstacle.
 
 <a id="l6"></a>
@@ -256,24 +256,24 @@ not MVP. it starts once the MVP is released ([M5](#m5)), and keeps the advanced 
 ### L6 · text execution trace and grid descriptions
 
 - **do:** accessibility enhancements: text-based execution trace and alternative grid descriptions.
-- **needs:** M5.
+- **needs:** M11.
 - **done when:** a run's trace can be read step by step as text, and the grid has a text description of its start, goal, walls and terrain, both reachable by keyboard and by a screen reader.
 
 ## ecosystem standards
 
-the ecosystem's contract, in `meta-eigenomar`, is adding two standards that every repository adopts: the documents each one keeps, and how each one manages its source and delivers it. DOC1 and SCM1 adopt them here, each once its standard is designed. until then, their issues stay in the backlog. neither needs B1, and B1 needs neither.
+the ecosystem's contract, in `meta-eigenomar`, is adding two standards that every repository adopts: the documents each one keeps, and how each one manages its source and delivers it. DOC8 and SCM8 adopt them here, each once its standard is designed. until then, their issues stay in the backlog. neither needs B1, and B1 needs neither.
 
-<a id="doc1"></a>
+<a id="doc8"></a>
 
-### DOC1 · the lab's documents
+### DOC8 · the lab's documents
 
-- **do:** write this lab's product vision, architecture, design, testing strategy, and verification and validation (V&V) documents, in the shape the ecosystem's document standard sets. where a file or section already covers one, name it rather than copy it. today the vision is this plan's opening, the architecture and the stack are shared decision SD3's outcomes under [shared decisions](#shared-decisions), the MVP's scope and constraints are under [MVP](#mvp), and [M5](#m5)'s done-when holds the release's checks. `CLAUDE.md` asks B1 to record the layout in `docs/architecture.md` or `CLAUDE.md`, so whichever lands second gives that document its place among the five. written before B1, the documents describe the planned lab, and B1 and the MVP keep them true.
+- **do:** write this lab's product vision, architecture, design, testing strategy, and verification and validation (V&V) documents, in the shape the ecosystem's document standard sets. where a file or section already covers one, name it rather than copy it. today the vision is this plan's opening, the architecture and the stack are shared decision SD3's outcomes under [shared decisions](#shared-decisions), the MVP's scope and constraints are under [MVP](#mvp), and [M11](#m11)'s done-when holds the release's checks. `CLAUDE.md` asks B1 to record the layout in `docs/architecture.md` or `CLAUDE.md`, so whichever lands second gives that document its place among the five. written before B1, the documents describe the planned lab, and B1 and the MVP keep them true.
 - **needs:** the ecosystem's document standard (`meta-eigenomar` ST1).
 - **done when:** each of the five documents exists, or names the file or section that holds it, and follows the standard's outline. `project.yaml` names them under the standard's keys, and the ecosystem's validator passes. nothing in them is confidential, since this repository is public.
 
-<a id="scm1"></a>
+<a id="scm8"></a>
 
-### SCM1 · the ecosystem's SCM strategy
+### SCM8 · the ecosystem's SCM strategy
 
 - **do:** adopt the ecosystem's SCM strategy through its adoption checklist: CI, branching, protection of `main`, versioning and releases, the health report and dependency updates. [B1](#b1) plans CI on GitHub Actions and a deploy on every merge to `main`. if the strategy is ready before B1 starts, B1 follows it and this ticket checks the rest. otherwise this ticket brings B1's workflows in line.
 - **needs:** the ecosystem's SCM strategy (`meta-eigenomar` ST2).
@@ -281,6 +281,7 @@ the ecosystem's contract, in `meta-eigenomar`, is adding two standards that ever
 
 ## log
 
+- 2026-11-26 · plan · renamed, since the ecosystem's lanes are numbered across its repositories: M7–M11 from `M1`–`M5`, L15–L19 from `L1`–`L5`, DOC8 from `DOC1` and SCM8 from `SCM1`. B1 and L6 keep theirs. their anchors, headings, index rows and issues changed with them, and the log keeps the ids it was written with.
 - 2026-11-25 · B1 · done at 0429503: CI passes and deploys, and `paths.eigenomar.com` answers with the shell and the ecosystem's tab icon. the result records what worked for each build.
 - 2026-11-25 · B1 · in progress: CI passes on Linux at 8229791, after clang-tidy's first run moved the headers to include guards. the deploy waits for the repository's Cloudflare secrets.
 - 2026-11-25 · B1 · in progress: the builds, checks, shell and deploy workflow, verified on Windows. CI's first run on Linux and the first deploy are left, as B1's progress note says.

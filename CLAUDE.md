@@ -2,7 +2,7 @@
 
 # pathfinding playground: Claude instructions
 
-pathfinding playground is an interactive laboratory for graph search: users build a map, pick a solver, watch its decisions step by step, and compare how algorithms find a route. the search runs in a C++20 engine, compiled to WebAssembly for a React and TypeScript app, and natively for tests and benchmarks. it is one of three C++ labs, with `signal_lab` and `gravity_engine`. the bootstrap's builds, checks and deploy are in place, and the engine holds only a probe until M1. it deploys to `paths.eigenomar.com`.
+pathfinding playground is an interactive laboratory for graph search: users build a map, pick a solver, watch its decisions step by step, and compare how algorithms find a route. the search runs in a C++20 engine, compiled to WebAssembly for a React and TypeScript app, and natively for tests and benchmarks. it is one of three C++ labs, with `signal_lab` and `gravity_engine`. the bootstrap's builds, checks and deploy are in place, and the engine holds only a probe until M7. it deploys to `paths.eigenomar.com`.
 
 ## commands
 
@@ -18,7 +18,7 @@ the README lists what to install on each platform. every command works on Window
 
 ## plan
 
-[docs/plan.md](docs/plan.md) is the plan. ticket ids are a lane prefix and a number (B1, M1, L1) and are never reused or renumbered. each ticket has a stable anchor, its id in lowercase, above its heading. when work ships, update the ticket's status in the index, add a result with the commit to the ticket, and add a line to the log. this repository is public, so confidential work never goes in the plan or anywhere else here.
+[docs/plan.md](docs/plan.md) is the plan. ticket ids are a lane prefix and a number (B1, M7, L15) and are never reused or renumbered. each ticket has a stable anchor, its id in lowercase, above its heading. when work ships, update the ticket's status in the index, add a result with the commit to the ticket, and add a line to the log. this repository is public, so confidential work never goes in the plan or anywhere else here.
 
 ## design
 
