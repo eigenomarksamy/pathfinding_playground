@@ -2,7 +2,7 @@
 
 an interactive laboratory for graph search. users create maps, select a solver, observe its decisions, and compare how quickly and efficiently algorithms find a route. the search runs in C++20, compiled to WebAssembly for the browser and natively for tests and benchmarks, with no server. it deploys to `paths.eigenomar.com`.
 
-the bootstrap, B1, is done: the builds, checks and deploy are in place, and the engine holds only a probe until M7. this plan holds the bootstrap (B1), the MVP (M7–M11) phase 2 (L15–L19 and L6), the adoption of the ecosystem's standards (DOC8, SCM8), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
+the bootstrap, B1, is done: the builds, checks and deploy are in place, and the engine holds only a probe until M7. this plan holds the bootstrap (B1), the MVP (M7–M11) phase 2 (L15–L19 and L6), the adoption of the ecosystem's standards (DOC8, SCM8, MIG8), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
 
 ## how this plan works
 
@@ -16,6 +16,7 @@ the bootstrap, B1, is done: the builds, checks and deploy are in place, and the 
   | L | phase 2: later work, after the MVP's release |
   | DOC | the lab's documents: vision, architecture, design, testing strategy, and verification and validation |
   | SCM | source control and delivery: CI, branching, protection, releases and versioning |
+  | MIG | the backlog moves into GitHub issues: the cutover to GitHub as its home |
 
 - **each ticket** says what to do, what it needs, and when it is done. its "done when" is its acceptance criteria. a need is a hard need: the ticket starts once it is done.
 - **size** is the index's column, on the ecosystem's scale, the same value as the ticket's issue's `Size` in the ecosystem's GitHub Project: xxs takes minutes, xs under an hour, s an hour or two, m about a session, l two or three, xl four to six and xxl more. tbd means an open decision or work not yet planned decides it. a change to one is made to the other in the same session.
@@ -75,6 +76,7 @@ every app under eigenomar.com shows the same tab icon, eigenomar.com's lambda wi
 | [L6](#l6) | text execution trace and grid descriptions | m | M11 | todo |
 | [DOC8](#doc8) | the lab's documents | tbd | `meta-eigenomar` ST1 | todo |
 | [SCM8](#scm8) | the ecosystem's SCM strategy | tbd | `meta-eigenomar` ST2 | todo |
+| [MIG8](#mig8) | the backlog moves into GitHub issues | xs | `meta-eigenomar` ST3 | todo |
 
 ## bootstrap
 
@@ -263,6 +265,8 @@ not MVP. it starts once the MVP is released ([M11](#m11)), and keeps the advance
 
 the ecosystem's contract, in `meta-eigenomar`, is adding two standards that every repository adopts: the documents each one keeps, and how each one manages its source and delivers it. DOC8 and SCM8 adopt them here, each once its standard is designed. until then, their issues stay in the backlog. neither needs B1, and B1 needs neither.
 
+a third standard, `meta-eigenomar` ST3, makes GitHub's issues the home of every repository's backlog, and its decisions were made on 2026-11-27. MIG8 moves this plan's tickets there, once ST3 is built.
+
 <a id="doc8"></a>
 
 ### DOC8 · the lab's documents
@@ -279,8 +283,17 @@ the ecosystem's contract, in `meta-eigenomar`, is adding two standards that ever
 - **needs:** the ecosystem's SCM strategy (`meta-eigenomar` ST2).
 - **done when:** every item on the checklist is applied here, or recorded here as an exception the strategy allows, with its reason. `project.yaml`'s `delivery` and `CLAUDE.md` say what runs, any workflow passes on `main`, and the ecosystem's validator passes.
 
+<a id="mig8"></a>
+
+### MIG8 · the backlog moves into GitHub issues
+
+- **do:** move this plan's planning to GitHub all at once, following the cutover steps of the ecosystem's standard `meta-eigenomar` ST3. each open ticket's content moves into its issue's body, keeping its id and its issue's `<id>: <title>`. ideas not yet tickets become draft items in the Project with status `idea`, hard needs are blocked-by links, and size, status and priority live only in the Project. done, dropped and moved tickets stay here as a frozen archive, and each open ticket's anchor stays, linking its issue. the [shared decisions](#shared-decisions) and the MVP's constraints stay as files, or move into the documents DOC8 writes.
+- **needs:** GitHub as the home of the backlog (`meta-eigenomar` ST3), which includes the ecosystem's own cutover first and the backlog's backup. DOC8 is a planning need: the plan's direction moves into the vision before this plan retires.
+- **done when:** every open ticket's content is in its issue, and this file holds only the archive and the anchors. `project.yaml`'s `documents.plan` is `null` and `planning.source` names GitHub, the ecosystem's validator passes, nothing confidential is in any issue, since this repository is public, and the owner approved the cutover. bringing tickets up to the ecosystem's ticket standard (`meta-eigenomar` ST4) isn't part of it: each ticket follows it when it is picked up.
+
 ## log
 
+- 2026-11-27 · plan · added MIG8, in a new lane, at the owner's request: this repository's cutover to GitHub as the home of its backlog, the ecosystem's standard `meta-eigenomar` ST3, whose decisions were made that day. it needs ST3, so its issue waits as `blocked`.
 - 2026-11-26 · plan · renamed, since the ecosystem's lanes are numbered across its repositories: M7–M11 from `M1`–`M5`, L15–L19 from `L1`–`L5`, DOC8 from `DOC1` and SCM8 from `SCM1`. B1 and L6 keep theirs. their anchors, headings, index rows and issues changed with them, and the log keeps the ids it was written with.
 - 2026-11-25 · B1 · done at 0429503: CI passes and deploys, and `paths.eigenomar.com` answers with the shell and the ecosystem's tab icon. the result records what worked for each build.
 - 2026-11-25 · B1 · in progress: CI passes on Linux at 8229791, after clang-tidy's first run moved the headers to include guards. the deploy waits for the repository's Cloudflare secrets.
