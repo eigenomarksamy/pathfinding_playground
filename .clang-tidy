@@ -24,5 +24,6 @@ Checks: >
   -cppcoreguidelines-pro-bounds-avoid-unchecked-container-access,
   -readability-avoid-unconditional-preprocessor-if
 WarningsAsErrors: '*'
-HeaderFilterRegex: '.*/cpp/include/pathfinding/.*'
+# either slash: on Windows, a header's path can mix them, as in cpp/include\pathfinding/grid.hpp.
+HeaderFilterRegex: '.*[/\\]cpp[/\\]include[/\\]pathfinding[/\\].*'
 FormatStyle: file

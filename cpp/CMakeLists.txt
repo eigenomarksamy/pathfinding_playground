@@ -1,6 +1,10 @@
 # the engine: C++20 with no rendering, browser or framework code, built natively and to WebAssembly from these sources.
 add_library(pathfinding_engine STATIC
+  src/generate.cpp
+  src/grid.cpp
+  src/map_text.cpp
   src/probe.cpp
+  src/status.cpp
   src/version.cpp)
 add_library(pathfinding::engine ALIAS pathfinding_engine)
 target_include_directories(pathfinding_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

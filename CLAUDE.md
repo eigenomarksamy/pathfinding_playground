@@ -2,7 +2,7 @@
 
 # pathfinding playground: Claude instructions
 
-pathfinding playground is an interactive laboratory for graph search: users build a map, pick a solver, watch its decisions step by step, and compare how algorithms find a route. the search runs in a C++20 engine, compiled to WebAssembly for a React and TypeScript app, and natively for tests and benchmarks. it is one of three C++ labs, with `signal_lab` and `gravity_engine`. the bootstrap's builds, checks and deploy are in place, and the engine holds only a probe until M7. it deploys to `paths.eigenomar.com`.
+pathfinding playground is an interactive laboratory for graph search: users build a map, pick a solver, watch its decisions step by step, and compare how algorithms find a route. the search runs in a C++20 engine, compiled to WebAssembly for a React and TypeScript app, and natively for tests and benchmarks. it is one of three C++ labs, with `signal_lab` and `gravity_engine`. the bootstrap's builds, checks and deploy are in place, and the engine has M7's grid and canonical test maps. the app still draws the bootstrap's probe until M9's interface and M10's editor bring the grid to it. it deploys to `paths.eigenomar.com`.
 
 ## commands
 

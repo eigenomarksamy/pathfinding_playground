@@ -2,7 +2,7 @@
 
 an interactive laboratory for graph search. users create maps, select a solver, observe its decisions, and compare how quickly and efficiently algorithms find a route. the search runs in C++20, compiled to WebAssembly for the browser and natively for tests and benchmarks, with no server. it deploys to `paths.eigenomar.com`.
 
-the bootstrap, B1, is done: the builds, checks and deploy are in place, and the engine holds only a probe until M7. this plan holds the bootstrap (B1), the MVP (M7–M11) phase 2 (L15–L19 and L6), the adoption of the ecosystem's standards (DOC8, SCM8, MIG8), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
+the bootstrap, B1, is done: the builds, checks and deploy are in place. M7 is done too: the engine has its grid, its map text and its seeded maps, with the canonical test maps, while the app still draws B1's probe until M9 and M10. this plan holds the bootstrap (B1), the MVP (M7–M11) phase 2 (L15–L19 and L6), the adoption of the ecosystem's standards (DOC8, SCM8, MIG8), and the shared decisions they rely on. the playground is the first of three C++ labs, with `signal_lab` and `gravity_engine`, each in its own repository: they reuse its bootstrap approach, not its code. work across the three, such as their release order or a library they might later share, is coordinated in the ecosystem, not planned here.
 
 ## how this plan works
 
@@ -63,7 +63,7 @@ every app under eigenomar.com shows the same tab icon, eigenomar.com's lambda wi
 | ticket | title | size | needs | status |
 | --- | --- | --- | --- | --- |
 | [B1](#b1) | bootstrap: native, WebAssembly and web, built and deployed from GitHub Actions | xl | none | done |
-| [M7](#m7) | core grid and test fixtures | m | B1 | todo |
+| [M7](#m7) | core grid and test fixtures | m | B1 | done |
 | [M8](#m8) | BFS, Dijkstra and A*, with heuristics and metrics | m | M7 | todo |
 | [M9](#m9) | compact event trace and Wasm interface | m | M8 | todo |
 | [M10](#m10) | grid editor, animation, controls and example maps | l | M9 | todo |
@@ -157,6 +157,12 @@ metrics + reproducible map generation
   - native unit tests cover 4-way and 8-way neighbors and their costs, weighted terrain included, and the no-corner-cutting rule.
   - a map generated twice from the same seed is identical, and a test checks it.
   - canonical test maps exist for an open grid, walls, weighted terrain, start equal to goal, no path, blocked cells, a tiny grid and a large grid, and each loads without error.
+- **result, 28 november 2026:** done. [docs/architecture.md](architecture.md#the-grid) states the model:
+  - **the grid** (`grid.hpp`): cells of weight 1 to 9 or walls, a start and a goal that are always open, and 4-way or 8-way neighbors in a fixed order. a step costs the entered cell's weight times 1000 straight or 1414 diagonal, in integers, so every build sums costs alike. no corner cutting: a diagonal needs both orthogonal cells beside it open. a negative or zero weight is rejected with `invalid_weight`, so no search can see one.
+  - **map text** (`map_text.hpp`), the canonical maps' format, with errors that name their cell. **seeded maps** (`generate.hpp`) come from SplitMix64 with its own bounded draw, never the standard library's distributions, so they are the same on every platform. `fingerprint` hashes a grid alike everywhere.
+  - **the done-whens:** the grid's tests cover 4-way and 8-way neighbors, their costs, weighted terrain and the no-corner-cutting rule. a map generated twice from one seed is identical, and two seeded maps' fingerprints are pinned, each checked against a Python version of the generator. the canonical maps (`open`, `walls`, `weighted`, `start_is_goal`, `no_path`, `blocked`, `tiny`, and `large`, generated at 256 × 256) each load without error and write back their own text.
+  - **checked on Windows:** 81 native tests on MSVC and on MinGW-w64 GCC with Ninja, the same from `c:\` and `C:\`. the WebAssembly build with `emsdk` 7.0.1, `npm run check` (13 tests), `npm run build`, and the lint, clang-tidy included, against the MinGW build.
+  - **clang-tidy's header filter** matched `/` only, so on Windows it skipped every engine header. it now matches either slash, and [docs/architecture.md](architecture.md#portability-findings) records it.
 
 <a id="m8"></a>
 
@@ -293,6 +299,7 @@ a third standard, `meta-eigenomar` ST3, makes GitHub's issues the home of every 
 
 ## log
 
+- 2026-11-28 · M7 · done: the grid, its integer costs and no-corner-cutting rule, map text, seeded maps and the canonical test maps, checked on Windows with MSVC, MinGW-w64 GCC, the WebAssembly build and the lint. clang-tidy's header filter now matches Windows paths too.
 - 2026-11-27 · plan · added MIG8, in a new lane, at the owner's request: this repository's cutover to GitHub as the home of its backlog, the ecosystem's standard `meta-eigenomar` ST3, whose decisions were made that day. it needs ST3, so its issue waits as `blocked`.
 - 2026-11-26 · plan · renamed, since the ecosystem's lanes are numbered across its repositories: M7–M11 from `M1`–`M5`, L15–L19 from `L1`–`L5`, DOC8 from `DOC1` and SCM8 from `SCM1`. B1 and L6 keep theirs. their anchors, headings, index rows and issues changed with them, and the log keeps the ids it was written with.
 - 2026-11-25 · B1 · done at 0429503: CI passes and deploys, and `paths.eigenomar.com` answers with the shell and the ecosystem's tab icon. the result records what worked for each build.
